@@ -3,11 +3,11 @@ source 'https://rubygems.org'
 gem 'rake', '~> 13.0'
 gem 'multi_json', '~> 1.15'
 gem 'coveralls', '~> 0.8', :require => false
-gem 'simplecov', '~> 0.22', :require => false
+gem 'simplecov', '~> 0.16', :require => false
 
-platforms :rbx do
-  gem "rubysl"
-end
+#platforms :rbx do
+#  gem "rubysl"
+#end
 
 group :test do
   gem 'rspec', '~> 3.12'
@@ -16,7 +16,7 @@ group :test do
   gem 'generator_spec', '~> 0.9'
 end
 
-gemspec
+#gemspec
 
 gem 'rails', '~> 6.1', :group => :test
 gem 'pry', '~> 0.14', :group => :test

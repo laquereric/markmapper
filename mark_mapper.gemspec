@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'activemodel', '~> 6.1'
   s.add_runtime_dependency 'activesupport', '~> 6.1'
-  s.add_runtime_dependency 'marklogic', '~> 0'
+  s.add_runtime_dependency 'marklogic', '~> 0', :git => 'https://github.com/laquereric/marklogic.git'
 end

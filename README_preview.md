@@ -1,0 +1,42 @@
+# MarkMapper
+
+A Ruby Object Mapper for MarkLogic.
+
+## Install
+
+```bash
+$ gem install mark_mapper
+```
+
+## Documentation
+
+- [http://paxtonhare.github.io/markmapper/](http://paxtonhare.github.io/markmapper/)
+- [http://rdoc.info/github/paxtonhare/markmapper](http://rdoc.info/github/paxtonhare/markmapper)
+
+## Compatibility
+
+MarkMapper is tested against:
+
+* MRI 2.2.1
+
+Additionally, MarkMapper is tested against:
+
+* Rails 4.2.x
+
+## Contributing & Development
+
+```bash
+$ git clone https://github.com/paxtonhare/markmapper && cd markmapper
+$ bundle install
+$ bundle exec rake
+```
+
+* Fork the project.
+* Make your feature addition or bug fix. All specs should pass.
+* Add specs for your changes. This is important so I don't break it in a future version unintentionally.
+* Commit, do not mess with Rakefile, version, or history. If you want to have your own version, that is fine but bump version in a commit by itself in another branch so a maintainer ignore it when your pull request is merged.
+* Send a pull request. Bonus points for topic branches.
+
+## License & Copyright
+
+See LICENSE for details.

@@ -1,27 +1,27 @@
 source 'https://rubygems.org'
 
-gem 'rake'
-gem 'multi_json',  '~> 1.2'
-gem 'coveralls', :require => false
-gem 'simplecov', :require => false
+gem 'rake', '~> 13.0'
+gem 'multi_json', '~> 1.15'
+gem 'coveralls', '~> 0.8', :require => false
+gem 'simplecov', '~> 0.22', :require => false
 
 platforms :rbx do
   gem "rubysl"
 end
 
 group :test do
-  gem 'rspec'
-  gem 'timecop',        '= 0.6.1'
-  gem 'rack-test',      '~> 0.5'
-  gem 'generator_spec'
+  gem 'rspec', '~> 3.12'
+  gem 'timecop', '~> 0.9'
+  gem 'rack-test', '~> 2.0'
+  gem 'generator_spec', '~> 0.9'
 end
 
 gemspec
 
-gem 'rails', '~> 4.2.0', :group => :test
-gem 'pry', :group => :test
-gem 'pry-byebug', :group => :test
-gem 'terminal-notifier-guard'
-gem 'rspec-nc'
-gem 'stackprof'
-gem 'net-http-persistent'
+gem 'rails', '~> 6.1', :group => :test
+gem 'pry', '~> 0.14', :group => :test
+gem 'pry-byebug', '~> 3.10', :group => :test
+gem 'terminal-notifier-guard', '~> 1.0'
+gem 'rspec-nc', '~> 0.3'
+gem 'stackprof', '~> 0.2'
+gem 'net-http-persistent', '~> 4.0'

@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require 'marklogic'
+require_relative '../spec/mock_marklogic'
 require 'active_support'
 require 'active_support/core_ext'
 require 'active_model'

@@ -18,7 +18,7 @@ end
 
 #gemspec
 
-gem 'rails', '~> 6.1', :group => :test
+gem 'rails', '~> 5.2', :group => :test
 gem 'pry', '~> 0.14', :group => :test
 gem 'pry-byebug', '~> 3.10', :group => :test
 gem 'terminal-notifier-guard', '~> 1.0'

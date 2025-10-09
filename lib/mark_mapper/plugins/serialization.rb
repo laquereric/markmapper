@@ -1,6 +1,10 @@
 # encoding: UTF-8
 require 'active_model/serializers/json'
-require 'active_model/serializers/xml'
+
+# Rails 5.2+ compatibility - XML serialization was removed
+if defined?(ActiveModel::Serializers::Xml)
+  require 'active_model/serializers/xml'
+end
 
 module MarkMapper
   module Plugins
@@ -9,7 +13,12 @@ module MarkMapper
 
       included do
         include ::ActiveModel::Serializers::JSON
-        include ::ActiveModel::Serializers::Xml
+        
+        # Rails 5.2+ compatibility - XML serialization was removed
+        if defined?(::ActiveModel::Serializers::Xml)
+          include ::ActiveModel::Serializers::Xml
+        end
+        
         self.include_root_in_json = false
       end
 
@@ -57,7 +66,11 @@ module MarkMapper
       end
 
       def to_xml(options = {}, &block)
-        XmlSerializer.new(self, options).serialize(&block)
+        if defined?(::ActiveModel::Serializers::Xml)
+          XmlSerializer.new(self, options).serialize(&block)
+        else
+          raise NotImplementedError, "XML serialization not available in Rails 5.2+"
+        end
       end
 
     private
@@ -89,20 +102,27 @@ module MarkMapper
         end
 
         def from_xml(xml)
-          self.new.from_xml(xml)
+          if defined?(::ActiveModel::Serializers::Xml)
+            self.new.from_xml(xml)
+          else
+            raise NotImplementedError, "XML serialization not available in Rails 5.2+"
+          end
         end
       end
     end
 
     # Override default Serializer to use #serializable_hash
-    class XmlSerializer < ::ActiveModel::Serializers::Xml::Serializer
-      def attributes_hash
-        @serializable.serializable_hash(options)
-      end
+    # Rails 5.2+ compatibility - XML serialization was removed
+    if defined?(::ActiveModel::Serializers::Xml)
+      class XmlSerializer < ::ActiveModel::Serializers::Xml::Serializer
+        def attributes_hash
+          @serializable.serializable_hash(options)
+        end
 
-      def serializable_methods
-        # Methods are already included in #serializable_hash
-        []
+        def serializable_methods
+          # Methods are already included in #serializable_hash
+          []
+        end
       end
     end
   end

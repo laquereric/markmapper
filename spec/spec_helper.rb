@@ -24,7 +24,7 @@ if RUBY_PLATFORM != "java"
   end
 end
 
-require 'marklogic'
+require_relative 'mock_marklogic'
 require 'mark_mapper'
 
 # These environment variables can be set if wanting to test against a database

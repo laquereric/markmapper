@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.platform           = Gem::Platform::RUBY
   s.files              = Dir.glob("{bin,examples,lib,spec}/**/*") + %w[LICENSE README.rdoc]
 
-  s.add_runtime_dependency 'activemodel', '~> 6.1'
-  s.add_runtime_dependency 'activesupport', '~> 6.1'
-  s.add_runtime_dependency 'marklogic', '~> 0', :git => 'https://github.com/laquereric/marklogic.git'
+  s.add_runtime_dependency 'activemodel', '~> 5.2'
+  s.add_runtime_dependency 'activesupport', '~> 5.2'
+  s.add_runtime_dependency 'marklogic', '~> 0', :path => '../marklogic-ruby-driver'
 end

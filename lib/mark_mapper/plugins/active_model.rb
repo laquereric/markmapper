@@ -8,7 +8,7 @@ module MarkMapper
       include ::ActiveModel::Serialization
       include ::ActiveModel::Serializers::JSON
       
-      # Rails 5.2+ compatibility - XML serialization was removed
+      # Rails 8+ compatibility - XML serialization moved to separate gem
       if defined?(::ActiveModel::Serializers::Xml)
         include ::ActiveModel::Serializers::Xml
       end

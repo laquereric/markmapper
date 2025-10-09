@@ -1,9 +1,11 @@
 # encoding: UTF-8
 require 'active_model/serializers/json'
 
-# Rails 5.2+ compatibility - XML serialization was removed
-if defined?(ActiveModel::Serializers::Xml)
-  require 'active_model/serializers/xml'
+# Rails 8+ compatibility - XML serialization moved to separate gem
+begin
+  require 'activemodel-serializers-xml'
+rescue LoadError
+  # XML serialization not available
 end
 
 module MarkMapper

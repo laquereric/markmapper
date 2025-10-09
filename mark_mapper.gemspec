@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'activemodel', '~> 5.2'
   s.add_runtime_dependency 'activesupport', '~> 5.2'
-  s.add_runtime_dependency 'marklogic', '~> 0', :path => '../marklogic-ruby-driver'
+  s.add_runtime_dependency 'marklogic-mock', '~> 0.1'
 end

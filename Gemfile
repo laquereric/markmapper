@@ -24,4 +24,5 @@ gem 'pry-byebug', '~> 3.10', :group => :test
 gem 'terminal-notifier-guard', '~> 1.0'
 gem 'rspec-nc', '~> 0.3'
 gem 'stackprof', '~> 0.2'
+gem 'marklogic-mock', '~> 0.1', :path => '../marklogic-mock-gem'
 gem 'net-http-persistent', '~> 4.0'

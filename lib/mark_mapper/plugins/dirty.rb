@@ -7,10 +7,24 @@ module MarkMapper
       include ::ActiveModel::Dirty
 
       def initialize(*)
-        # never register initial id assignment as a change
-        # Chaining super into tap breaks implicit block passing in Ruby 1.8
+        @_initializing = true
+        @_changed_attributes = {}
+        @previously_changed = {}
         doc = super
-        doc.tap { changed_attributes.delete('_id') }
+        @_initializing = false
+        # Clear any changes tracked during initialization
+        @_changed_attributes.clear
+        doc
+      end
+
+      def initialize_from_database(*)
+        @_initializing = true
+        @_changed_attributes = {}
+        @previously_changed = {}
+        doc = super
+        @_initializing = false
+        @_changed_attributes.clear
+        doc
       end
 
       def save(*)
@@ -23,13 +37,36 @@ module MarkMapper
       end
 
       def clear_changes
-        previous = changes
+        previous = @_changed_attributes.dup
         (block_given? ? yield : true).tap do |result|
           unless result == false #failed validation; nil is OK.
             @previously_changed = previous
-            changed_attributes.clear
+            @_changed_attributes.clear
           end
         end
+      end
+
+      # Override ActiveModel::Dirty methods to use our internal tracking
+      def changed?
+        @_changed_attributes.any?
+      end
+
+      def changed
+        @_changed_attributes.keys
+      end
+
+      def changes
+        @_changed_attributes.transform_values { |old_val| [old_val, read_key(@_changed_attributes.key(old_val))] }
+          .transform_keys(&:to_s)
+          .select { |k, v| v[0] != v[1] }
+      end
+
+      def changed_attributes
+        @_changed_attributes.transform_keys(&:to_s)
+      end
+
+      def previous_changes
+        @previously_changed || {}
       end
 
       protected
@@ -45,16 +82,70 @@ module MarkMapper
         key = unalias_key(key)
         if !keys.key?(key)
           super
+        elsif @_initializing
+          # Skip dirty tracking during initialization
+          super
         else
-          attribute_will_change!(key) unless attribute_changed?(key)
+          old_value = read_key(key)
           super.tap do
-            changed_attributes.delete(key) unless attribute_value_changed?(key)
+            new_value = read_key(key)
+            if old_value != new_value
+              @_changed_attributes[key] ||= old_value
+            elsif @_changed_attributes[key] == new_value
+              # Value changed back to original
+              @_changed_attributes.delete(key)
+            end
           end
         end
       end
 
-      def attribute_value_changed?(key_name)
-        changed_attributes[key_name] != read_key(key_name)
+      # Generate attribute-specific dirty methods
+      def respond_to_missing?(method_name, include_private = false)
+        attr_name = method_name.to_s.sub(/(_changed\?|_was|_change|_will_change!|_previously_changed\?|_previous_change)$/, '')
+        if method_name.to_s =~ /(_changed\?|_was|_change|_will_change!|_previously_changed\?|_previous_change)$/ && keys.key?(attr_name)
+          true
+        else
+          super
+        end
+      end
+
+      def method_missing(method_name, *args, &block)
+        attr_name = method_name.to_s.sub(/(_changed\?|_was|_change|_will_change!|_previously_changed\?|_previous_change)$/, '')
+        suffix = method_name.to_s[attr_name.length..]
+
+        if keys.key?(attr_name)
+          key_sym = attr_name.to_sym
+          case suffix
+          when '_changed?'
+            @_changed_attributes.key?(key_sym) || @_changed_attributes.key?(attr_name)
+          when '_was'
+            if @_changed_attributes.key?(key_sym)
+              @_changed_attributes[key_sym]
+            elsif @_changed_attributes.key?(attr_name)
+              @_changed_attributes[attr_name]
+            else
+              read_key(attr_name)
+            end
+          when '_change'
+            if @_changed_attributes.key?(key_sym)
+              [@_changed_attributes[key_sym], read_key(attr_name)]
+            elsif @_changed_attributes.key?(attr_name)
+              [@_changed_attributes[attr_name], read_key(attr_name)]
+            else
+              nil
+            end
+          when '_will_change!'
+            @_changed_attributes[key_sym] ||= read_key(attr_name)
+          when '_previously_changed?'
+            previous_changes.key?(attr_name) || previous_changes.key?(key_sym.to_s)
+          when '_previous_change'
+            previous_changes[attr_name] || previous_changes[key_sym.to_s]
+          else
+            super
+          end
+        else
+          super
+        end
       end
     end
   end

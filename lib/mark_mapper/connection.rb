@@ -7,6 +7,7 @@ module MarkMapper
     @@database      = nil
     @@database_name = nil
     @@config        = nil
+    @@application   = nil
 
     # @api public
     def connection

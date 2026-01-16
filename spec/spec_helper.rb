@@ -119,6 +119,11 @@ RSpec.configure do |config|
 
   config.fail_fast = false
 
+  # Clear mock storage between tests
+  config.before(:each) do
+    MarkLogic::Storage.instance.clear if defined?(MarkLogic::Storage)
+  end
+
   config.before(:all) do
     @application = MarkMapper.application.tap do |app|
       app.add_index(MarkLogic::DatabaseSettings::RangeElementIndex.new(:_id, :type => 'string'))

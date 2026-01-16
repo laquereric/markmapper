@@ -71,7 +71,7 @@ module MarkMapper
           result = nil
           query.cursor do |cursor|
             result = cursor
-            cursor.each { |doc| yield doc }
+            cursor.each { |doc| yield query.transform(doc) }
             cursor.rewind!
           end
           result
@@ -82,7 +82,8 @@ module MarkMapper
 
       def find_one(opts={})
         query = clone.amend(opts)
-        query.collection.find_one(query.criteria_hash, query.options_hash)
+        doc = query.collection.find_one(query.criteria_hash, query.options_hash)
+        query.transform(doc)
       end
 
       def find(*ids)
@@ -234,6 +235,12 @@ module MarkMapper
 
     def cursor(&block)
       @collection.find(criteria_hash, options_hash, &block)
+    end
+
+    def transform(doc)
+      return nil if doc.nil?
+      transformer = @options[:transformer]
+      transformer ? transformer.call(doc) : doc
     end
 
     # def to_cursor_options
